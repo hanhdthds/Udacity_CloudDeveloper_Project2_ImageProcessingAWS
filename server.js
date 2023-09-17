@@ -15,17 +15,15 @@ import {filterImageFromURL, deleteLocalFiles} from './util/util.js';
 
   app.get("/filteredimage", async (req, res) => {
     const { image_url } = req.query;
-    
-    try {
-      const image_file = await filterImageFromURL(image_url);
 
-      res.status(200).sendFile(image_file);
-
-      res.on('finish', () => deleteLocalFiles([image_file]));
-
-    } catch (error) {
-      res.status(422).send("Your image url invalid")
+    if (!image_url) {
+      res.status(422).send("Your image url invalid");
     }
+    
+    const image_file = await filterImageFromURL(image_url);
+
+    res.status(200).sendFile(image_file);
+    res.on('finish', () => deleteLocalFiles([image_file]));
   })
 
   app.get( "/", async (req, res) => {
